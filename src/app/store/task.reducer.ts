@@ -22,5 +22,10 @@ export const taskReducer = createReducer(
       task.id === id ? { ...task, completed: true } : task
     )
   })),
-  //TODO: Implementar los demás reducers para las acciones definidas
+  on(TaskActions.markTaskAsPending, (state, { id }) => ({
+    ...state,
+    tasks: state.tasks.map(task =>
+      task.id === id ? { ...task, completed: false } : task
+    )
+  })),
 );

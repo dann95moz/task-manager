@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Task } from 'src/app/interfaces/task.interface';
 import { selectAllTasks, selectCompletedTasks, selectPendingTasks } from 'src/app/store/task.selectors';
-import { completeTask, removePersonFromTask, removeSkillFromPerson } from 'src/app/store/task.actions';
+import { completeTask, removePersonFromTask, removeSkillFromPerson,markTaskAsPending } from 'src/app/store/task.actions';
 
 
 @Component({
@@ -43,6 +43,9 @@ export class TaskListComponent {
     this.store.dispatch(completeTask({ id }));
   }
 
+  markTaskAsPending(id: number) {
+    this.store.dispatch(markTaskAsPending({ id }));
+  }
   removePerson(taskId: number, personId: number) {
     this.store.dispatch(removePersonFromTask({ taskId, personId }));
   }

@@ -7,8 +7,11 @@
   <li *ngFor="let task of tasks$ | async">
     <h3>{{ task.title }}</h3>
     <p>Due: {{ task.dueDate | date }}</p>
-    <button (click)="completeTask(task.id)" [disabled]="task.completed">
-      {{ task.completed ? 'Completed' : 'Mark as Complete' }}
+    <button (click)="completeTask(task.id)" *ngIf="!task.completed">
+      Mark as Complete
+    </button>
+    <button (click)="markTaskAsPending(task.id)" *ngIf="task.completed">
+      Mark as Pending
     </button>
     <ul>
       <li *ngFor="let person of task.persons">
