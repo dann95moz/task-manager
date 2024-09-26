@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule , FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { ReactiveFormsModule , FormBuilder, FormGroup, FormArray, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { addTask } from 'src/app/store/task.actions';
 @Component({
@@ -17,7 +17,7 @@ export class TaskFormComponent {
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       dueDate: ['', Validators.required],
-      persons: this.fb.array([])
+      persons: this.fb.array([], [Validators.required, this.minArrayLength(1)])
     });
   }
 
@@ -31,9 +31,9 @@ export class TaskFormComponent {
 
   addPerson() {
     const personForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(5)]],
+      fullName: ['', [Validators.required, Validators.minLength(5), this.uniqueNameValidator()]],
       age: ['', [Validators.required, Validators.min(18)]],
-      skills: this.fb.array([])
+      skills: this.fb.array([], [Validators.required, this.minArrayLength(1)])
     });
     this.persons.push(personForm);
   }
@@ -59,6 +59,29 @@ export class TaskFormComponent {
       };
       this.store.dispatch(addTask({ task: newTask }));
       this.taskForm.reset();
+      while (this.persons.length !== 0) {
+        this.persons.removeAt(0);
+      }
     }
+  }
+
+  minArrayLength(min: number): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      if (control instanceof FormArray) {
+        return control.length >= min ? null : { 'minLength': {actual: control.length, min: min} };
+      }
+      return null;
+    };
+  }
+
+  uniqueNameValidator(): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      const name = control.value;
+      const persons = this.persons.value;
+      const isDuplicate = persons.some((person: any, index: number) => 
+        person.fullName === name && this.persons.controls.indexOf(control.parent as FormGroup) !== index
+      );
+      return isDuplicate ? { 'duplicateName': true } : null;
+    };
   }
 }
