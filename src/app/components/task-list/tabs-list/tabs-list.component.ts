@@ -1,9 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Task } from 'src/app/interfaces/task.interface';
-import { Observable } from 'rxjs';
-import { select, Store } from '@ngrx/store';
-import { selectAllTasks, selectCompletedTasks, selectPendingTasks } from 'src/app/store/task.selectors';
+import {  Store } from '@ngrx/store';
 import { completeTask, markTaskAsPending } from 'src/app/store/task.actions';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
