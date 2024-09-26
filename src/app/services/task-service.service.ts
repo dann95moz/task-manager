@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Task } from '../interfaces/task.interface';
 import { Observable } from 'rxjs';
-import { addTask } from '../store/task.actions';
+import { addTask, completeTask, markTaskAsPending } from '../store/task.actions';
 import { Store } from '@ngrx/store';
 
 @Injectable({
@@ -16,5 +16,12 @@ export class TaskService {
       observer.next();
       observer.complete();
     });
+  }
+  completeTask(id: number) {
+    this.store.dispatch(completeTask({ id }));
+  }
+
+  markTaskAsPending(id: number) {
+    this.store.dispatch(markTaskAsPending({ id }));
   }
 }

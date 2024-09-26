@@ -1,16 +1,17 @@
+//angular imports
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 // interfaces
 import { Task } from 'src/app/interfaces/task.interface';
-
-//ngRx
-import {  Store } from '@ngrx/store';
-import { completeTask, markTaskAsPending } from 'src/app/store/task.actions';
 
 //angular material Modules
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
+
+//services
+import { TaskService } from 'src/app/services/task-service.service';
 
 @Component({
   selector: 'app-tabs-list',
@@ -25,33 +26,42 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class TabsListComponent implements OnChanges{
 
-  @Input() tasks: Task[] | null= []
-  @Input() status: string ='all'
-  filteredTasks: Task[] |null= [];
+  @Input() tasks: Task[] = []
+  @Input() status: 'all' | 'pending' | 'completed' = 'all'
+  filteredTasks: Task[] = [];
+
+  constructor( private taskService: TaskService) {}
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['tasks'] || changes['status']) {
       this.filterTasks();
     }
   }
-  filterTasks() {
-    if (this.tasks) {
-      
-      if (this.status === 'all') {
-        this.filteredTasks = this.tasks;
-      } else if (this.status === 'pending') {
+  
+ private filterTasks() {
+    if (!this.tasks) {
+      this.filteredTasks = [];
+      return;
+    }
+
+    switch (this.status) {
+      case 'pending':
         this.filteredTasks = this.tasks.filter(task => !task.completed);
-      } else if (this.status === 'completed') {
+        break;
+      case 'completed':
         this.filteredTasks = this.tasks.filter(task => task.completed);
-      }
+        break;
+      default:
+        this.filteredTasks = this.tasks;
     }
   }
-  constructor(private store: Store) {}
+
  
   completeTask(id: number) {
-    this.store.dispatch(completeTask({ id }));
+    this.taskService.completeTask(id);
   }
 
   markTaskAsPending(id: number) {
-    this.store.dispatch(markTaskAsPending({ id }));
+    this.taskService.markTaskAsPending(id);
   }
 }
