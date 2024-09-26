@@ -8,18 +8,12 @@ import { Task } from 'src/app/interfaces/task.interface';
 
 //ngRX imports
 import { Store, select } from '@ngrx/store';
-import { selectAllTasks, selectCompletedTasks, selectPendingTasks } from 'src/app/store/task.selectors';
-import { completeTask, removePersonFromTask, removeSkillFromPerson,markTaskAsPending } from 'src/app/store/task.actions';
+import { selectAllTasks} from 'src/app/store/task.selectors';
 
 
 //Material imports
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { TabsListComponent } from './tabs-list/tabs-list.component';
 
 @Component({
