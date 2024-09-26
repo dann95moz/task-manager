@@ -25,16 +25,12 @@ import { TabsListComponent } from './tabs-list/tabs-list.component';
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     RouterModule,
   //material modules
   MatButtonModule,
-  MatCardModule,
-  MatChipsModule,
-  MatIconModule,
-  MatListModule,
   MatTabsModule,
-  MatExpansionModule,
   //components
   TabsListComponent
   ],
