@@ -1,53 +1,82 @@
-<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
-  <div>
-    <input formControlName="title" placeholder="Task title">
-    <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
-      <small *ngIf="taskForm.get('title')?.errors?.['required']">Title is required.</small>
-      <small *ngIf="taskForm.get('title')?.errors?.['minlength']">Title must be at least 5 characters long.</small>
-    </div>
-  </div>
-
-  <div>
-    <input formControlName="dueDate" type="date">
-    <div *ngIf="taskForm.get('dueDate')?.invalid && taskForm.get('dueDate')?.touched">
-      <small *ngIf="taskForm.get('dueDate')?.errors?.['required']">Due date is required.</small>
-    </div>
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="task-form">
+  <div class="header-container">
+    <h2>Create new task</h2>
+    <button mat-button color="primary" [routerLink]="['/tasks-list']">
+      View task list
+    </button>
   </div>
   
-  <div formArrayName="persons">
-    <div *ngFor="let person of persons.controls; let i = index" [formGroupName]="i">
-      <div>
-        <input formControlName="fullName" placeholder="Full name">
-        <div *ngIf="person.get('fullName')?.invalid && person.get('fullName')?.touched">
-          <small *ngIf="person.get('fullName')?.errors?.['required']">Full name is required.</small>
-          <small *ngIf="person.get('fullName')?.errors?.['minlength']">Full name must be at least 5 characters long.</small>
-          <small *ngIf="person.get('fullName')?.errors?.['duplicateName']">This name already exists in the task.</small>
-        </div>
-      </div>
+  <mat-form-field appearance="fill">
+    <mat-label>Task title</mat-label>
+    <input matInput formControlName="title" placeholder="Enter task title">
+    <mat-error *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
+      <span *ngIf="taskForm.get('title')?.errors?.['required']">Title is required.</span>
+      <span *ngIf="taskForm.get('title')?.errors?.['minlength']">Title must be at least 5 characters long.</span>
+    </mat-error>
+  </mat-form-field>
 
-      <div>
-        <input formControlName="age" type="number" placeholder="Age">
-        <div *ngIf="person.get('age')?.invalid && person.get('age')?.touched">
-          <small *ngIf="person.get('age')?.errors?.['required']">Age is required.</small>
-          <small *ngIf="person.get('age')?.errors?.['min']">Age must be at least 18.</small>
-        </div>
-      </div>
-      
-      <div formArrayName="skills">
-        <div *ngFor="let skill of personSkills(i).controls; let j = index">
-          <input [formControlName]="j" placeholder="Skill">
-          <button type="button" (click)="removeSkill(i, j)">Remove Skill</button>
-        </div>
-        <div *ngIf="personSkills(i).invalid && personSkills(i).touched">
-          <small *ngIf="personSkills(i).errors?.['required']">At least one skill is required.</small>
-        </div>
-        <button type="button" (click)="addSkill(i)">Add Skill</button>
-      </div>
-      
-      <button type="button" (click)="removePerson(i)">Remove Person</button>
-    </div>
-    <button type="button" (click)="addPerson()">Add Person</button>
-  </div>
+  <mat-form-field appearance="fill">
+    <mat-label>Due date</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="dueDate">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error *ngIf="taskForm.get('dueDate')?.invalid && taskForm.get('dueDate')?.touched">
+      Due date is required.
+    </mat-error>
+  </mat-form-field>
+
+
+<div *ngIf="persons.controls.length>0" >
+
+  <mat-accordion formArrayName="persons" >
+    <mat-expansion-panel *ngFor="let person of persons.controls; let i = index" [formGroupName]="i" class="panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Person {{ i + 1 }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="person_info">
+
+        <mat-form-field appearance="fill" >
+          <mat-label>Full name</mat-label>
+          <input matInput formControlName="fullName" placeholder="Enter full name">
+          <mat-error *ngIf="person.get('fullName')?.invalid && person.get('fullName')?.touched">
+            <span *ngIf="person.get('fullName')?.errors?.['required']">Full name is required.</span>
+            <span *ngIf="person.get('fullName')?.errors?.['minlength']">Full name must be at least 5 characters long.</span>
+            <span *ngIf="person.get('fullName')?.errors?.['duplicateName']">This name already exists in the task.</span>
+          </mat-error>
+        </mat-form-field>
   
-  <button type="submit" [disabled]="taskForm.invalid">Create Task</button>
+        <mat-form-field appearance="fill">
+          <mat-label>Age</mat-label>
+          <input matInput type="number" formControlName="age" placeholder="Enter age">
+          <mat-error *ngIf="person.get('age')?.invalid && person.get('age')?.touched">
+            <span *ngIf="person.get('age')?.errors?.['required']">Age is required.</span>
+            <span *ngIf="person.get('age')?.errors?.['min']">Age must be at least 18.</span>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <h4>skills</h4>
+      <div formArrayName="skills" class="skills">
+        <mat-form-field *ngFor="let skill of personSkills(i).controls; let j = index" appearance="fill">
+          <mat-label>Skill {{ j + 1 }}</mat-label>
+          <input matInput [formControlName]="j" placeholder="Enter skill">
+          <button mat-icon-button matSuffix (click)="removeSkill(i, j)" type="button">
+            <mat-icon>remove</mat-icon>
+          </button>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="button" (click)="addSkill(i)"><mat-icon>add</mat-icon> Add</button>
+      </div>
+      
+      <button mat-raised-button color="warn" type="button" (click)="removePerson(i)" class="remove">
+        <mat-icon>delete</mat-icon> 
+        Remove Person</button>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+  <div class="actions_container">
+  <button mat-raised-button color="primary" type="button" (click)="addPerson()">Add Person</button>
+  
+  <button mat-raised-button color="accent" type="submit" [disabled]="taskForm.invalid">Create Task</button>
+</div>
 </form>

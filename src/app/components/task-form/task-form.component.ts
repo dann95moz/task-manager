@@ -3,10 +3,32 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule , FormBuilder, FormGroup, FormArray, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { addTask } from 'src/app/store/task.actions';
+
+// ANGULAR MATERIAL IMPORTS
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
+//
 @Component({
   selector: 'app-task-form',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [
+    //angular native modules
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    //angular material modules
+    MatInputModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatExpansionModule,
+    MatIconModule
+  ],
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.scss']
 })

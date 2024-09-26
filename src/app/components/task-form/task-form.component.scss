@@ -1,0 +1,29 @@
+.header-container{
+  display: flex;
+  gap:2rem
+}
+.task-form{
+  display: flex; 
+  flex-direction: column;
+  gap: 0.5rem
+}
+.person_info{
+  display: flex;
+  flex-direction: column;
+}
+.skills{
+  display: flex;
+  flex-direction: column;
+
+}
+.remove{
+  margin: 1rem 0
+}
+.form{
+  display: flex;
+  flex-direction: column;
+}
+.actions_container{
+  display: flex;
+  justify-content: space-around;
+}
