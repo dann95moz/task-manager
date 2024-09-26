@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule , FormBuilder, FormGroup, FormArray, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -14,6 +14,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 // components
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { Task } from 'src/app/interfaces/task.interface';
+import { TaskService } from 'src/app/services/task-service.service';
+import { ValidationUtils } from 'src/app/utils/validation.utils';
 
 //
 @Component({
@@ -36,38 +39,45 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.scss']
 })
-export class TaskFormComponent {
+export class TaskFormComponent implements OnInit{
  
-  taskForm: FormGroup;
+  taskForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private store: Store,private snackBar: MatSnackBar) {
+  constructor(private fb: FormBuilder,private snackBar: MatSnackBar,    private taskService: TaskService) {
+
+  }
+  ngOnInit() {
+    this.initForm();
+  }
+ 
+  private initForm() {
     this.taskForm = this.fb.group({
-      //initialize form builder
       title: ['', [Validators.required, Validators.minLength(5)]],
       dueDate: ['', Validators.required],
       persons: this.fb.array([], [Validators.required, this.minArrayLength(1)])
     });
   }
- 
+  private resetForm() {
+    this.taskForm.reset();
+    while (this.persons.length !== 0) {
+      this.persons.removeAt(0);
+    }
+  }
 
   openSnackBar(message: string) { // triggers notification on bottom of the screen
     this.snackBar.open(message,'',{
       duration: 3000
     });
   }
+
   get persons() {
     return this.taskForm.get('persons') as FormArray;
   }
-
-  personSkills(personIndex: number): FormArray {
-    return this.persons.at(personIndex).get('skills') as FormArray;
-  }
-
   addPerson() {
     const personForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(5), this.uniqueNameValidator()]],
+      fullName: ['', [Validators.required, Validators.minLength(5), ValidationUtils.uniqueNameValidator(this.persons)]],
       age: ['', [Validators.required, Validators.min(18)]],
-      skills: this.fb.array([], [Validators.required, this.minArrayLength(1)])
+      skills: this.fb.array([], [Validators.required, ValidationUtils.minArrayLength(1)])
     });
     this.persons.push(personForm);
   }
@@ -84,22 +94,37 @@ export class TaskFormComponent {
     this.personSkills(personIndex).removeAt(skillIndex);
   }
 
+
+  personSkills(personIndex: number): FormArray {
+    return this.persons.at(personIndex).get('skills') as FormArray;
+  }
+
   onSubmit() {
     if (this.taskForm.valid) {
-      const task = {
+      const task: Task = {
         ...this.taskForm.value,
         id: Date.now(),
         completed: false
       };
-      this.store.dispatch(addTask({ task }));
-      this.taskForm.reset();
-      this.openSnackBar(`the task${this.taskForm.get('title')?.value} has been created successfully`);
-      while (this.persons.length !== 0) {
-        this.persons.removeAt(0);
-      }
+      this.taskService.addTask(task).subscribe({
+        next: ()=>{
+          this.resetForm()
+        this.showNotification('Task created successfully')
+      },
+        error: (error)=>{
+          this.showNotification('Error creating task');
+          console.error('Error creating task:', error);
+        }}
+       
+       
+      );
     }
   }
-
+  private showNotification(message: string) {
+    this.snackBar.open(message, '', {
+      duration: 3000
+    });
+  }
   minArrayLength(min: number): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
       if (control instanceof FormArray) {
@@ -109,14 +134,5 @@ export class TaskFormComponent {
     };
   }
 
-  uniqueNameValidator(): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: any} | null => {
-      const name = control.value;
-      const persons = this.persons.value;
-      const isDuplicate = persons.some((person: any, index: number) => 
-        person.fullName === name && this.persons.controls.indexOf(control.parent as FormGroup) !== index
-      );
-      return isDuplicate ? { 'duplicateName': true } : null;
-    };
-  }
+
 }
