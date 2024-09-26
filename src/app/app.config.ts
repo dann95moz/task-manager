@@ -6,10 +6,11 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { taskReducer } from './store/task.reducer';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes),
-     provideStore({ tasks: taskReducer }),
+    provideStore({ tasks: taskReducer }),
     provideEffects(),
-    provideStoreDevtools()]
+    provideStoreDevtools(), provideAnimations()]
 };
