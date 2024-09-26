@@ -25,7 +25,10 @@ export class TaskListComponent {
   ngOnInit() {
     this.updateFilter();
   }
-
+  setFilter(newFilter: 'all' | 'completed' | 'pending') {
+    this.filter = newFilter;
+    this.updateFilter();
+  }
   updateFilter() {
     switch (this.filter) {
       case 'completed':
