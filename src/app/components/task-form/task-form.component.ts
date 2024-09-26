@@ -43,7 +43,10 @@ export class TaskFormComponent implements OnInit{
  
   taskForm!: FormGroup;
 
-  constructor(private fb: FormBuilder,private snackBar: MatSnackBar,    private taskService: TaskService) {
+  constructor(
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,
+    private taskService: TaskService) {
 
   }
   ngOnInit() {
@@ -54,7 +57,7 @@ export class TaskFormComponent implements OnInit{
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       dueDate: ['', Validators.required],
-      persons: this.fb.array([], [Validators.required, this.minArrayLength(1)])
+      persons: this.fb.array([], [Validators.required, ValidationUtils.minArrayLength(1)])
     });
   }
   private resetForm() {
@@ -120,19 +123,11 @@ export class TaskFormComponent implements OnInit{
       );
     }
   }
+  
   private showNotification(message: string) {
     this.snackBar.open(message, '', {
       duration: 3000
     });
   }
-  minArrayLength(min: number): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: any} | null => {
-      if (control instanceof FormArray) {
-        return control.length >= min ? null : { 'minLength': {actual: control.length, min: min} };
-      }
-      return null;
-    };
-  }
-
 
 }
