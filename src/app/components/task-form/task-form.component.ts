@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule , FormBuilder, FormGroup, FormArray, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -12,6 +12,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+// components
+import {MatSnackBar} from '@angular/material/snack-bar';
+
 //
 @Component({
   selector: 'app-task-form',
@@ -27,22 +30,30 @@ import { RouterModule } from '@angular/router';
     MatDatepickerModule,
     MatNativeDateModule,
     MatExpansionModule,
-    MatIconModule
+    MatIconModule,
   ],
+  providers: [MatSnackBar],
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.scss']
 })
 export class TaskFormComponent {
+ 
   taskForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private store: Store) {
+  constructor(private fb: FormBuilder, private store: Store,private snackBar: MatSnackBar) {
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       dueDate: ['', Validators.required],
       persons: this.fb.array([], [Validators.required, this.minArrayLength(1)])
     });
   }
+ 
 
+  openSnackBar(message: string) {
+    this.snackBar.open(message,'',{
+      duration: 3000
+    });
+  }
   get persons() {
     return this.taskForm.get('persons') as FormArray;
   }
@@ -74,13 +85,14 @@ export class TaskFormComponent {
 
   onSubmit() {
     if (this.taskForm.valid) {
-      const newTask = {
+      const task = {
         ...this.taskForm.value,
         id: Date.now(),
         completed: false
       };
-      this.store.dispatch(addTask({ task: newTask }));
+      this.store.dispatch(addTask({ task }));
       this.taskForm.reset();
+      this.openSnackBar(`the task${this.taskForm.get('title')?.value} has been created successfully`);
       while (this.persons.length !== 0) {
         this.persons.removeAt(0);
       }
