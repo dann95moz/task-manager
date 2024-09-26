@@ -5,7 +5,11 @@ import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { taskReducer } from './store/task.reducer';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideStore(), provideEffects(), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
+  providers: [provideRouter(routes),
+     provideStore({ tasks: taskReducer }),
+    provideEffects(),
+    provideStoreDevtools()]
 };
