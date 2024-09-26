@@ -1,8 +1,13 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+// interfaces
 import { Task } from 'src/app/interfaces/task.interface';
+
+//ngRx
 import {  Store } from '@ngrx/store';
 import { completeTask, markTaskAsPending } from 'src/app/store/task.actions';
+
+//angular material Modules
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
@@ -40,11 +45,8 @@ export class TabsListComponent implements OnChanges{
       }
     }
   }
-  constructor(private store: Store) {
-
-  }
+  constructor(private store: Store) {}
  
-
   completeTask(id: number) {
     this.store.dispatch(completeTask({ id }));
   }

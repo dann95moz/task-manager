@@ -42,6 +42,7 @@ export class TaskFormComponent {
 
   constructor(private fb: FormBuilder, private store: Store,private snackBar: MatSnackBar) {
     this.taskForm = this.fb.group({
+      //initialize form builder
       title: ['', [Validators.required, Validators.minLength(5)]],
       dueDate: ['', Validators.required],
       persons: this.fb.array([], [Validators.required, this.minArrayLength(1)])
@@ -49,7 +50,7 @@ export class TaskFormComponent {
   }
  
 
-  openSnackBar(message: string) {
+  openSnackBar(message: string) { // triggers notification on bottom of the screen
     this.snackBar.open(message,'',{
       duration: 3000
     });
