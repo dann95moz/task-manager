@@ -1,16 +1,43 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Store, select } from '@ngrx/store';
+import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
+
+//interfaces
 import { Task } from 'src/app/interfaces/task.interface';
+
+//ngRX imports
+import { Store, select } from '@ngrx/store';
 import { selectAllTasks, selectCompletedTasks, selectPendingTasks } from 'src/app/store/task.selectors';
 import { completeTask, removePersonFromTask, removeSkillFromPerson,markTaskAsPending } from 'src/app/store/task.actions';
 
 
+//Material imports
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { TabsListComponent } from './tabs-list/tabs-list.component';
+
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,
+    RouterModule,
+  //material modules
+  MatButtonModule,
+  MatCardModule,
+  MatChipsModule,
+  MatIconModule,
+  MatListModule,
+  MatTabsModule,
+  MatExpansionModule,
+  //components
+  TabsListComponent
+  ],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss']
 })
@@ -22,38 +49,11 @@ export class TaskListComponent {
     this.tasks$ = this.store.pipe(select(selectAllTasks));
   }
 
-  ngOnInit() {
-    this.updateFilter();
-  }
-  setFilter(newFilter: 'all' | 'completed' | 'pending') {
-    this.filter = newFilter;
-    this.updateFilter();
-  }
-  updateFilter() {
-    switch (this.filter) {
-      case 'completed':
-        this.tasks$ = this.store.pipe(select(selectCompletedTasks));
-        break;
-      case 'pending':
-        this.tasks$ = this.store.pipe(select(selectPendingTasks));
-        break;
-      default:
-        this.tasks$ = this.store.pipe(select(selectAllTasks));
-    }
+  
   }
 
-  completeTask(id: number) {
-    this.store.dispatch(completeTask({ id }));
-  }
 
-  markTaskAsPending(id: number) {
-    this.store.dispatch(markTaskAsPending({ id }));
-  }
-  removePerson(taskId: number, personId: number) {
-    this.store.dispatch(removePersonFromTask({ taskId, personId }));
-  }
 
-  removeSkill(taskId: number, personId: number, skill: string) {
-    this.store.dispatch(removeSkillFromPerson({ taskId, personId, skill }));
-  }
-}
+
+
+

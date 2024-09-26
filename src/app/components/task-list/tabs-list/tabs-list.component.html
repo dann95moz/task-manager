@@ -1,0 +1,22 @@
+<mat-accordion *ngFor="let task of filteredTasks">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      {{ task.title }}
+    </mat-expansion-panel-header>
+    <p>Due: {{ task.dueDate | date }}</p>
+    <button mat-raised-button color="primary" (click)="completeTask(task.id)" *ngIf="!task.completed">
+      Mark as Completed
+    </button>
+    <button mat-raised-button color="warn" (click)="markTaskAsPending(task.id)" *ngIf="task.completed">
+      Mark as Pending
+    </button>
+    <ul>
+      <li *ngFor="let person of task.persons">
+        <p>{{ person.fullName }} ({{ person.age }} years old)</p>
+        <mat-chip-set aria-label="group of skills">
+          <mat-chip *ngFor="let skill of person.skills">{{ skill }}</mat-chip>
+        </mat-chip-set>
+      </li>
+    </ul>
+  </mat-expansion-panel>
+</mat-accordion>
