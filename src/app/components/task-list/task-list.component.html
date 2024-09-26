@@ -1,1 +1,26 @@
-<p>task-list works!</p>
+<div>
+  <button (click)="filter = 'all'">All</button>
+  <button (click)="filter = 'completed'">Completed</button>
+  <button (click)="filter = 'pending'">Pending</button>
+</div>
+<ul>
+  <li *ngFor="let task of tasks$ | async">
+    <h3>{{ task.title }}</h3>
+    <p>Due: {{ task.dueDate | date }}</p>
+    <button (click)="completeTask(task.id)" [disabled]="task.completed">
+      {{ task.completed ? 'Completed' : 'Mark as Complete' }}
+    </button>
+    <ul>
+      <li *ngFor="let person of task.persons">
+        <p>{{ person.fullName }} ({{ person.age }} years old)</p>
+        <ul>
+          <li *ngFor="let skill of person.skills">
+            {{ skill }}
+            <button (click)="removeSkill(task.id, person.id, skill)">Remove Skill</button>
+          </li>
+        </ul>
+        <button (click)="removePerson(task.id, person.id)">Remove Person</button>
+      </li>
+    </ul>
+  </li>
+</ul>
