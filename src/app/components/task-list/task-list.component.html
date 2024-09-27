@@ -5,29 +5,25 @@
   </button>
 </div>
 <ng-container *ngIf="tasks$ | async as tasks; else loadingTemplate">
-  <ng-container *ngIf="tasks.length===0; else showTabs">
+  <ng-container *ngIf="tasks.length === 0; else showTabs">
     <h4>There are not tasks yet, please create one first</h4>
   </ng-container>
   <ng-template #showTabs>
     <mat-tab-group>
-      <mat-tab label="All" >
+      <mat-tab label="All">
         <app-tabs-list [tasks]="tasks" [status]="'all'"></app-tabs-list>
       </mat-tab>
-      
-      <mat-tab label="Pending" >
-        <app-tabs-list [tasks]="tasks"  [status]="'pending'"></app-tabs-list>
+
+      <mat-tab label="Pending">
+        <app-tabs-list [tasks]="tasks" [status]="'pending'"></app-tabs-list>
       </mat-tab>
-      
-      <mat-tab label="Completed" >
-        <app-tabs-list [tasks]="tasks"  [status]="'completed'"></app-tabs-list>
+
+      <mat-tab label="Completed">
+        <app-tabs-list [tasks]="tasks" [status]="'completed'"></app-tabs-list>
       </mat-tab>
     </mat-tab-group>
   </ng-template>
-  
- 
 </ng-container>
 <ng-template #loadingTemplate>
-    <h2>Loading tasks...</h2>
+  <h2>Loading tasks...</h2>
 </ng-template>
-
-

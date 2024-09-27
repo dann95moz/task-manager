@@ -4,10 +4,20 @@
       {{ task.title }}
     </mat-expansion-panel-header>
     <p>Due: {{ task.dueDate | date }}</p>
-    <button mat-raised-button color="primary" (click)="completeTask(task.id)" *ngIf="!task.completed">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="completeTask(task.id)"
+      *ngIf="!task.completed"
+    >
       Mark as Completed
     </button>
-    <button mat-raised-button color="warn" (click)="markTaskAsPending(task.id)" *ngIf="task.completed">
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="markTaskAsPending(task.id)"
+      *ngIf="task.completed"
+    >
       Mark as Pending
     </button>
     <ul>

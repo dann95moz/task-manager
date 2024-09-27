@@ -1,8 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule , FormBuilder, FormGroup, FormArray, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { addTask } from 'src/app/store/task.actions';
+import { ReactiveFormsModule , FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 
 // ANGULAR MATERIAL IMPORTS
 import { MatInputModule } from '@angular/material/input';

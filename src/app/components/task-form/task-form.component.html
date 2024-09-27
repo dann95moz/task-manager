@@ -5,78 +5,149 @@
       View task list
     </button>
   </div>
-  
+
   <mat-form-field appearance="fill">
     <mat-label>Task title</mat-label>
-    <input matInput formControlName="title" placeholder="Enter task title">
-    <mat-error *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
-      <span *ngIf="taskForm.get('title')?.errors?.['required']">Title is required.</span>
-      <span *ngIf="taskForm.get('title')?.errors?.['minlength']">Title must be at least 5 characters long.</span>
+    <input matInput formControlName="title" placeholder="Enter task title" />
+    <mat-error
+      *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched"
+    >
+      <span *ngIf="taskForm.get('title')?.errors?.['required']"
+        >Title is required.</span
+      >
+      <span *ngIf="taskForm.get('title')?.errors?.['minlength']"
+        >Title must be at least 5 characters long.</span
+      >
     </mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Due date</mat-label>
-    <input matInput [matDatepicker]="picker" formControlName="dueDate">
+    <input matInput [matDatepicker]="picker" formControlName="dueDate" />
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
-    <mat-error *ngIf="taskForm.get('dueDate')?.invalid && taskForm.get('dueDate')?.touched">
+    <mat-error
+      *ngIf="
+        taskForm.get('dueDate')?.invalid && taskForm.get('dueDate')?.touched
+      "
+    >
       Due date is required.
     </mat-error>
   </mat-form-field>
 
+  <div *ngIf="persons.controls.length > 0">
+    <mat-accordion formArrayName="persons">
+      <mat-expansion-panel
+        *ngFor="let person of persons.controls; let i = index"
+        [formGroupName]="i"
+        class="panel"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title> Person {{ i + 1 }} </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="person_info">
+          <mat-form-field appearance="fill">
+            <mat-label>Full name</mat-label>
+            <input
+              matInput
+              formControlName="fullName"
+              placeholder="Enter full name"
+            />
+            <mat-error
+              *ngIf="
+                person.get('fullName')?.invalid &&
+                person.get('fullName')?.touched
+              "
+            >
+              <span *ngIf="person.get('fullName')?.errors?.['required']"
+                >Full name is required.</span
+              >
+              <span *ngIf="person.get('fullName')?.errors?.['minlength']"
+                >Full name must be at least 5 characters long.</span
+              >
+              <span *ngIf="person.get('fullName')?.errors?.['duplicateName']"
+                >This name already exists in the task.</span
+              >
+            </mat-error>
+          </mat-form-field>
 
-<div *ngIf="persons.controls.length>0" >
-
-  <mat-accordion formArrayName="persons" >
-    <mat-expansion-panel *ngFor="let person of persons.controls; let i = index" [formGroupName]="i" class="panel">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Person {{ i + 1 }}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class="person_info">
-
-        <mat-form-field appearance="fill" >
-          <mat-label>Full name</mat-label>
-          <input matInput formControlName="fullName" placeholder="Enter full name">
-          <mat-error *ngIf="person.get('fullName')?.invalid && person.get('fullName')?.touched">
-            <span *ngIf="person.get('fullName')?.errors?.['required']">Full name is required.</span>
-            <span *ngIf="person.get('fullName')?.errors?.['minlength']">Full name must be at least 5 characters long.</span>
-            <span *ngIf="person.get('fullName')?.errors?.['duplicateName']">This name already exists in the task.</span>
-          </mat-error>
-        </mat-form-field>
-  
-        <mat-form-field appearance="fill">
-          <mat-label>Age</mat-label>
-          <input matInput type="number" formControlName="age" placeholder="Enter age">
-          <mat-error *ngIf="person.get('age')?.invalid && person.get('age')?.touched">
-            <span *ngIf="person.get('age')?.errors?.['required']">Age is required.</span>
-            <span *ngIf="person.get('age')?.errors?.['min']">Age must be at least 18.</span>
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <h4>skills</h4>
-      <div formArrayName="skills" class="skills">
-        <mat-form-field *ngFor="let skill of personSkills(i).controls; let j = index" appearance="fill">
-          <mat-label>Skill {{ j + 1 }}</mat-label>
-          <input matInput [formControlName]="j" placeholder="Enter skill">
-          <button mat-icon-button matSuffix (click)="removeSkill(i, j)" type="button">
-            <mat-icon>remove</mat-icon>
+          <mat-form-field appearance="fill">
+            <mat-label>Age</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="age"
+              placeholder="Enter age"
+            />
+            <mat-error
+              *ngIf="person.get('age')?.invalid && person.get('age')?.touched"
+            >
+              <span *ngIf="person.get('age')?.errors?.['required']"
+                >Age is required.</span
+              >
+              <span *ngIf="person.get('age')?.errors?.['min']"
+                >Age must be at least 18.</span
+              >
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <h4>skills</h4>
+        <div formArrayName="skills" class="skills">
+          <mat-form-field
+            *ngFor="let skill of personSkills(i).controls; let j = index"
+            appearance="fill"
+          >
+            <mat-label>Skill {{ j + 1 }}</mat-label>
+            <input matInput [formControlName]="j" placeholder="Enter skill" />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="removeSkill(i, j)"
+              type="button"
+            >
+              <mat-icon>remove</mat-icon>
+            </button>
+          </mat-form-field>
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="addSkill(i)"
+          >
+            <mat-icon>add</mat-icon> Add Skill
           </button>
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="button" (click)="addSkill(i)"><mat-icon>add</mat-icon> Add Skill</button>
-      </div>
-      
-      <button mat-raised-button color="warn" type="button" (click)="removePerson(i)" class="remove">
-        <mat-icon>delete</mat-icon> 
-        Remove Person</button>
-    </mat-expansion-panel>
-  </mat-accordion>
-</div>
+        </div>
+
+        <button
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="removePerson(i)"
+          class="remove"
+        >
+          <mat-icon>delete</mat-icon>
+          Remove Person
+        </button>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
   <div class="actions_container">
-  <button mat-raised-button color="primary" type="button" (click)="addPerson()">Add Person</button>
-  
-  <button mat-raised-button color="accent" type="submit" [disabled]="taskForm.invalid">Create Task</button>
-</div>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="addPerson()"
+    >
+      Add Person
+    </button>
+
+    <button
+      mat-raised-button
+      color="accent"
+      type="submit"
+      [disabled]="taskForm.invalid"
+    >
+      Create Task
+    </button>
+  </div>
 </form>
