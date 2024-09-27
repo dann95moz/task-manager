@@ -12,6 +12,9 @@ import { MatButtonModule } from '@angular/material/button';
 
 //services
 import { TaskService } from 'src/app/services/task-service.service';
+import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { selectAllTasks, selectCompletedTasks, selectPendingTasks } from 'src/app/store/task.selectors';
 
 @Component({
   selector: 'app-tabs-list',
@@ -28,31 +31,28 @@ export class TabsListComponent implements OnChanges{
 
   @Input() tasks: Task[] = []
   @Input() status: 'all' | 'pending' | 'completed' = 'all'
-  filteredTasks: Task[] = [];
+  tasks$: Observable<Task[]> = new Observable<Task[]>;
+ 
 
-  constructor( private taskService: TaskService) {}
+  constructor( private taskService: TaskService, private store: Store) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['tasks'] || changes['status']) {
-      this.filterTasks();
+    if (changes['status']) {
+      this.setTasksObservable();
     }
   }
   
- private filterTasks() {
-    if (!this.tasks) {
-      this.filteredTasks = [];
-      return;
-    }
-
+  private setTasksObservable() {
     switch (this.status) {
       case 'pending':
-        this.filteredTasks = this.tasks.filter(task => !task.completed);
+        this.tasks$ = this.store.pipe(select(selectPendingTasks));
         break;
       case 'completed':
-        this.filteredTasks = this.tasks.filter(task => task.completed);
+        this.tasks$ = this.store.pipe(select(selectCompletedTasks));
         break;
       default:
-        this.filteredTasks = this.tasks;
+        this.tasks$ = this.store.pipe(select(selectAllTasks));
+        break;
     }
   }
 

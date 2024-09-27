@@ -1,4 +1,4 @@
-<mat-accordion *ngFor="let task of filteredTasks">
+<mat-accordion *ngFor="let task of tasks$ | async">
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       {{ task.title }}
