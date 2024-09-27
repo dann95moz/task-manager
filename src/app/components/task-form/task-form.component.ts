@@ -1,6 +1,12 @@
+//angular native modules
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule , FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { 
+  ReactiveFormsModule ,
+   FormBuilder, 
+   FormGroup,
+    FormArray, 
+    Validators } from '@angular/forms';
 
 // ANGULAR MATERIAL IMPORTS
 import { MatInputModule } from '@angular/material/input';
@@ -10,10 +16,12 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-// components
 import {MatSnackBar} from '@angular/material/snack-bar';
+// interfaces
 import { Task } from 'src/app/interfaces/task.interface';
+//services
 import { TaskService } from 'src/app/services/task-service.service';
+//utils
 import { ValidationUtils } from 'src/app/utils/validation.utils';
 
 //
